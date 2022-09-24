@@ -1,0 +1,63 @@
+<html>
+<head>
+ <script src="http://127.0.0.1/scripts/js/jquery-3.6.0.js"></script>
+<script src="http://127.0.0.1/scripts/js/bootstrap.min.js"></script>
+
+<link rel="stylesheet" href="http://127.0.0.1/scripts/css/bootstrap.min.css"></link>
+<script>
+$(document).ready(function () {
+    var datum = {};
+    datum["offset"] = 0;
+    datum["limit"] = 10;
+    datum["sort"] = "txDate";
+	var json = JSON.stringify(datum);
+
+    $.get({
+         url: "https://restcountries.com/v3.1/name/peru",
+         success: function (response, status) {
+              $.each(response,function(index,data){
+				  $("#peruCntryData").append("<tr><td>"+data.name.official+"</td><td>"+data.capital+"</td><td>"+data.population+"</td></tr>");
+              });
+         }
+     });
+	 
+	
+ 
+	  $.post({
+         url: "http://127.0.0.1:9090/fetchData",
+		 data: json,
+         processData: false,
+         contentType: 'application/json',
+         success: function (response, status) {
+              $.each(response.content,function(index,data){
+			      //console.log(data);
+				  itemsDetails = data;
+				  //console.log(itemsDetails);
+				  $("#payTransData").append("<tr><td>"+data.txDate+"</td><td>"+data.activity+"</td><td>"+data.sourceDestination+
+				  "</td><td>"+data.walletTxId+"</td><td>"+data.usr_comment+"</td><td>"+data.debit+"</td><td>"+data.credit+"</td><td>"
+				  +data.transaction_breakup+"</td><td>"+data.status+"</td></tr>");
+              });
+         }
+     });
+ });
+ </script>
+</head>
+<body>
+   <div class="page-container page-navigation-toggled">
+    <div class="page-title">
+        <h2>Deep Blue Ocean</h2>
+    </div>
+    <div class="row">
+            <table class="table" id="peruCntryData">
+			   <tbody>
+			      <tr><td>name</td><td>capital</td><td>population</td></tr>
+               </tbody>
+            </table>
+    </div>
+	<div class="row"><table class="table" id="payTransData"><tbody>
+                        <tr><td>TX_DATE</td><td>ACTIVITY</td><td>SOURCEDESTINATION</td>
+                        <td>WALLETTXID</td><td>USR_COMMENT</td><td>DEBIT</td>
+                        <td>CREDIT</td><td>TRANSACTION_BREAKUP</td><td>STATUS</td></tr></tbody></table></div>
+    </div>
+</body>
+</html>
